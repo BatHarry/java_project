@@ -87,6 +87,15 @@ command -option_1 -option_2 -option_3. Комбинация от същата к
   16. apartment -ID -edit
       Процедура за редактиране на апартамент
       
+  17. total -owed/collected (optional) yyyy-mm
+      Командата връща информация за общо събрани и несъбрани пари от всички клиенти. Пример:
+      
+	total -owed
+	total -collected
+	total -collected 2019-08
+	
+   Незадължителния параметър yyyy-mm представлява дата. Може да се използва само с "collected"
+      
   17. menu
       Тази команда извежда всичко опции от менюто.
       
