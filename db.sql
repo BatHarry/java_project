@@ -83,7 +83,7 @@ CREATE TABLE `clients` (
   `surface` int(11) NOT NULL,
   `common_grounds` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `column_8` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `clients_address_uindex` (`address`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
@@ -95,7 +95,7 @@ CREATE TABLE `clients` (
 
 LOCK TABLES `clients` WRITE;
 /*!40000 ALTER TABLE `clients` DISABLE KEYS */;
-INSERT INTO `clients` VALUES (2,'Graf Ignatiev 43, Sofia',5,10,1210,210,'2019-08-01 13:05:20','2020-01-17 09:53:03'),(3,'Ivan Shishman 43, Sofia',5,10,1210,210,'2020-01-16 14:05:20','2020-01-16 14:05:20'),(4,'test2',3,2,2,2,'2020-01-16 19:22:21','2020-01-17 05:38:17'),(5,'Liuben Karavelov 43, Sofia',5,10,1210,210,'2020-01-16 14:05:20','2020-01-16 14:05:20');
+INSERT INTO `clients` VALUES (2,'Graf Ignatiev 43, Sofia',5,10,1210,210,'2019-08-01 13:05:20','2020-01-17 09:53:03'),(3,'Ivan Shishman 43, Sofia',5,10,1210,210,'2019-11-16 14:05:20','2020-01-17 19:00:51'),(4,'test2',3,2,2,2,'2019-12-16 19:22:21','2020-01-17 18:59:52'),(5,'Liuben Karavelov 43, Sofia',5,10,1210,210,'2020-01-16 14:05:20','2020-01-16 14:05:20');
 /*!40000 ALTER TABLE `clients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -140,7 +140,7 @@ CREATE TABLE `taxes` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `taxes_amount_uindex` (`amount`),
   UNIQUE KEY `taxes_client_uindex` (`client`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +149,7 @@ CREATE TABLE `taxes` (
 
 LOCK TABLES `taxes` WRITE;
 /*!40000 ALTER TABLE `taxes` DISABLE KEYS */;
-INSERT INTO `taxes` VALUES (1,100,2);
+INSERT INTO `taxes` VALUES (1,100,2),(3,50,3);
 /*!40000 ALTER TABLE `taxes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,8 +164,10 @@ CREATE TABLE `taxes_paid` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `for_month` date NOT NULL,
   `apartment` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+  `amount` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `month_client` (`apartment`,`for_month`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,7 +176,7 @@ CREATE TABLE `taxes_paid` (
 
 LOCK TABLES `taxes_paid` WRITE;
 /*!40000 ALTER TABLE `taxes_paid` DISABLE KEYS */;
-INSERT INTO `taxes_paid` VALUES (1,'2019-08-01',1),(2,'2019-09-01',1),(3,'2019-10-01',1),(4,'2019-11-01',1),(7,'2019-12-01',1),(12,'2020-02-01',11);
+INSERT INTO `taxes_paid` VALUES (1,'2019-08-01',1,100),(2,'2019-09-01',1,100),(3,'2019-10-01',1,100),(4,'2019-11-01',1,100),(7,'2019-12-01',1,100),(13,'2019-08-01',2,100);
 /*!40000 ALTER TABLE `taxes_paid` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -187,4 +189,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-01-17 12:58:45
+-- Dump completed on 2020-01-17 21:24:39
