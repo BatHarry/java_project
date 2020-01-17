@@ -2,9 +2,11 @@ package com.company;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Apartment extends Entity {
     private int id;
@@ -42,7 +44,7 @@ public class Apartment extends Entity {
                 this.since = rs.getInt("since");
                 this.paid = rs.getInt("paid");
                 this.lastDate = rs.getDate("last_payment");
-                this.lastDate = rs.getDate("start_date");
+                this.startDate = rs.getDate("start_date");
 
                 this.owes = (this.since - this.paid) * this.tax;
             }
@@ -154,9 +156,10 @@ public class Apartment extends Entity {
             myCal.set(Calendar.DAY_OF_MONTH, 1);
             Date nextMonth = myCal.getTime();
 
-            PreparedStatement stmt = DB.con().prepareStatement("INSERT INTO taxes_paid(for_month, apartment) VALUES (?,?)");
+            PreparedStatement stmt = DB.con().prepareStatement("INSERT INTO taxes_paid(for_month, apartment, amount) VALUES (?,?,?)");
             stmt.setDate(1, new java.sql.Date(nextMonth.getTime()));
-            stmt.setInt(2, this.id);
+            stmt.setInt(2, this.tax);
+            stmt.setInt(3, this.id);
 
             stmt.execute();
         }catch(Exception e){
@@ -178,5 +181,127 @@ public class Apartment extends Entity {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public static int allCount(){
+        int count = 0;
+        try{
+            PreparedStatement statement = DB.con().prepareStatement("SELECT COUNT(id) as `count` FROM apartment");
+            statement.execute();
+
+            ResultSet rs = statement.getResultSet();
+            while (rs.next()){
+                count = rs.getInt("count");
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        return count;
+    }
+
+    public static int allPeopleCount(){
+        int count = 0;
+        try{
+            PreparedStatement statement = DB.con().prepareStatement("SELECT SUM(people) as `count` FROM apartment");
+            statement.execute();
+
+            ResultSet rs = statement.getResultSet();
+            while (rs.next()){
+                count = rs.getInt("count");
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        return count;
+    }
+
+    public static int totalOwed(){
+//        ArrayList<Apartment> allApartments = new ArrayList<Apartment>();
+        int totalDebt = 0;
+        try{
+            PreparedStatement statement = DB.con().prepareStatement("SELECT id FROM apartment");
+
+            statement.execute();
+
+            ResultSet rs = statement.getResultSet();
+            while (rs.next()){
+                Apartment apartment = new Apartment(rs.getInt("id"));
+//                allApartments.add(apartment);
+
+                totalDebt += apartment.owes;
+            }
+
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        return totalDebt;
+    }
+
+    public static int totalOwed(String month) {
+        int totalDebt = 0;
+        month = month+"-02";
+
+        try{
+            PreparedStatement statement = DB.con().prepareStatement("SELECT apartment.id, clients.created_at, apartment.client FROM apartment LEFT JOIN clients ON apartment.client=clients.id WHERE clients.created_at <= ?");
+            statement.setString(1,month);
+            statement.execute();
+
+            ResultSet rs = statement.getResultSet();
+            while (rs.next()){
+                Apartment apartment = new Apartment(rs.getInt("id"));
+                statement = DB.con().prepareStatement("SELECT id FROM taxes_paid WHERE apartment=? AND for_month=?");
+                statement.setInt(1, apartment.getId());
+                statement.setString(2,month);
+                statement.execute();
+
+                ResultSet rs2 = statement.getResultSet();
+                if(!rs2.next()){
+                    totalDebt += apartment.tax;
+                }
+            }
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+
+        return totalDebt;
+    }
+
+    public static int totalCollected(){
+        int totalCollected = 0;
+        try {
+            Statement statement = DB.con().createStatement();
+            statement.execute("SELECT SUM(amount) as `total` FROM taxes_paid");
+            ResultSet rs = statement.getResultSet();
+            while (rs.next()){
+                totalCollected = rs.getInt("total");
+            }
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+
+        return totalCollected;
+    }
+
+    public static int totalCollected(String month){
+        int totalCollected = 0;
+        month = month+"-01";
+        try {
+            PreparedStatement statement = DB.con().prepareStatement("SELECT SUM(amount) as `total` FROM taxes_paid WHERE for_month=?");
+            statement.setString(1,month);
+            statement.execute();
+
+            ResultSet rs = statement.getResultSet();
+            while (rs.next()){
+                totalCollected = rs.getInt("total");
+            }
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+
+        return totalCollected;
     }
 }

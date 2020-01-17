@@ -2,9 +2,7 @@ package com.company;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Commands {
@@ -270,5 +268,37 @@ public class Commands {
 
     public void setTax(int id, int amount){
         Client.setTax(id, amount);
+    }
+
+    public void allClientsCounts(){
+        System.out.println("Total number of clients is "+Integer.toString(Client.allCount()));
+    }
+
+    public void getApartmentsCount(){
+        System.out.println("Total number of apartments is "+Integer.toString(Apartment.allCount()));
+    }
+
+    public void getPeopleCount(){
+        System.out.println("Total number of people is "+Integer.toString(Apartment.allPeopleCount()));
+    }
+
+    public void totalOwed(){
+        System.out.println("Total debt: \u001B[31m"+Apartment.totalOwed()+"\u001B[0m BGN");
+    }
+
+//    public void totalOwed(String month){
+//        try {
+//            System.out.println("Total owed for "+month+": \u001B[32m"+Apartment.totalOwed(month)+"\u001B[0m BGN");
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
+//    }
+
+    public void totalCollected(){
+        System.out.println("Total collected: \u001B[32m"+Apartment.totalCollected()+"\u001B[0m BGN");
+    }
+
+    public void totalCollected(String month){
+        System.out.println("Total collected for "+month+": \u001B[32m"+Apartment.totalCollected(month)+"\u001B[0m BGN");
     }
 }

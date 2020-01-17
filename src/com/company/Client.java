@@ -215,4 +215,21 @@ public class Client extends Entity {
             System.out.println(e.getMessage());
         }
     }
+
+    public static int allCount(){
+        int count = 0;
+        try{
+            PreparedStatement statement = DB.con().prepareStatement("SELECT COUNT(id) as `count` FROM clients");
+            statement.execute();
+
+            ResultSet rs = statement.getResultSet();
+            while (rs.next()){
+                count = rs.getInt("count");
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        return count;
+    }
 }
