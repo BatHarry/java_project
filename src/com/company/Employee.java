@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+// Клас със функционалностите свързани с работниците
 public class Employee extends Entity {
+    //Параментри
     private int id;
     private String firstName;
     private String lastName;
@@ -24,10 +26,7 @@ public class Employee extends Entity {
         this.dateOfHire = dateOfHire;
     }
 
-    public int getId() {
-        return id;
-    }
-
+    // Getters and Setters
     public String getFirstName() {
         return firstName;
     }
@@ -44,31 +43,13 @@ public class Employee extends Entity {
         return dateOfHire;
     }
 
+    //Връща датата на наемане в низ
     public String getDateOfHireString() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
         return dateFormat.format(dateOfHire);
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setDateOfHire(Date dateOfHire) {
-        this.dateOfHire = dateOfHire;
-    }
-
+    //Връща форматиран низ за изписване в командния интерфейс.
     public String prettyPrint(){
         return  ANSI_GREEN+"id: "+ANSI_RESET+this.id+"\n"+
                 ANSI_GREEN+"First Name: "+ANSI_RESET+this.firstName+"\n"+
@@ -77,6 +58,7 @@ public class Employee extends Entity {
                 ANSI_GREEN+"Hired at: "+ANSI_RESET+this.dateOfHire+"\n";
     }
 
+    //Връща всички записи на работници
     public static ArrayList<Employee> getAll(){
         ArrayList<Employee> allEmployees = new ArrayList<>();
         ResultSet rs = null;
@@ -98,6 +80,7 @@ public class Employee extends Entity {
         return allEmployees;
     }
 
+    //Връща конкретен работник. Приема id на работник
     public static Employee get(int id){
         Employee employee = null;
         ResultSet rs = null;
@@ -120,6 +103,7 @@ public class Employee extends Entity {
         return employee;
     }
 
+    //Метод за създаване на работник. Приема HashMap от информацията необходим за създаването му
     public static void create(HashMap<String, String> data){
         try{
             PreparedStatement stmt = DB.con().prepareStatement("INSERT INTO employees(first_name, last_name, phone, date_of_hire) VALUES (?,?,?,?)");
@@ -135,6 +119,7 @@ public class Employee extends Entity {
         }
     }
 
+    //Метод за триене на работник. Приема id на работнки
     public static boolean delete(int id){
         try {
             PreparedStatement stmt = DB.con().prepareStatement("DELETE FROM employees WHERE id=?");
@@ -147,6 +132,7 @@ public class Employee extends Entity {
         }
     }
 
+    //Метод за редакция на работник. Приема HashMap от информацията необходим за редакцията му
     public static void edit(int id, HashMap<String, String>data){
         try{
             PreparedStatement stmt = DB.con().prepareStatement("UPDATE employees SET first_name=?, last_name=?, phone=?, date_of_hire=?  WHERE id=?");

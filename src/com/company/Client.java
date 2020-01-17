@@ -5,7 +5,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// Клас със функционалностите свързани с клиентите
 public class Client extends Entity {
+    //Параментри
     private final int id;
     private String address;
     private int storeys;
@@ -23,6 +25,8 @@ public class Client extends Entity {
         this.common_grounds = common_grounds;
     }
 
+
+    //Getters and Setters
     public int getId() {
         return id;
     }
@@ -47,26 +51,6 @@ public class Client extends Entity {
         return common_grounds;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setStoreys(int storeys) {
-        this.storeys = storeys;
-    }
-
-    public void setApartments(int apartments) {
-        this.apartments = apartments;
-    }
-
-    public void setSurface(int surface) {
-        this.surface = surface;
-    }
-
-    public void setCommon_grounds(int common_grounds) {
-        this.common_grounds = common_grounds;
-    }
-
     @Override
     public String toString() {
         return "Client{" +
@@ -79,6 +63,7 @@ public class Client extends Entity {
                 '}';
     }
 
+    //Връща форматиран низ за изписване в командния интерфейс.
     public String prettyPrint(){
         return  ANSI_GREEN+"id: "+ANSI_RESET+this.id+"\n"+
                 ANSI_GREEN+"Address: "+ANSI_RESET+this.address+"\n"+
@@ -88,6 +73,7 @@ public class Client extends Entity {
                 ANSI_GREEN+"Shared spaces(sq. m.): "+ANSI_RESET+this.common_grounds+"\n";
     }
 
+    //Връща конкретен клиент. Приема id на клиент
     public static Client get(int id){
         Client client;
         ResultSet rs = null;
@@ -111,6 +97,8 @@ public class Client extends Entity {
         return null;
     }
 
+    //Процедура за създаване на нов клиент. Приема HashMap съдържащ инфорамацията необходима за създаването на новия
+    //клиент
     public static void create(HashMap<String, String> data){
         try {
             PreparedStatement stmt = DB.con().prepareStatement("INSERT INTO clients(address, storeys, apartments, surface, common_grounds) VALUES (?,?,?,?,?)");
@@ -126,6 +114,7 @@ public class Client extends Entity {
         }
     }
 
+    //Метод за триене на клиент. Приема id на клиент
     public static boolean delete(int id){
         try {
             PreparedStatement stmt = DB.con().prepareStatement("DELETE FROM clients WHERE id=?");
@@ -138,6 +127,7 @@ public class Client extends Entity {
         }
     }
 
+    //Процедура за редакция на клиент. Приема HashMap съдържащ инфорамацията необходима за редакцията
     public static void edit(int id, HashMap<String, String>data){
         try{
             PreparedStatement stmt = DB.con().prepareStatement("UPDATE clients SET address=?,storeys=?,apartments=?,surface=?,common_grounds=? WHERE id=?");
@@ -153,6 +143,7 @@ public class Client extends Entity {
         }
     }
 
+    //Връща отговорения работник за клиента
     public static String getAssigned(int id){
         String result = "";
         try{
@@ -173,6 +164,7 @@ public class Client extends Entity {
         return result;
     }
 
+    //Определя отговорен работник за клиент. Приема id на клиент и id на работник
     public static void assign(int id, int employeeId){
         try {
             PreparedStatement stmt = DB.con().prepareStatement("INSERT INTO client_employee(client, employee) VALUES (?,?)");
@@ -185,6 +177,7 @@ public class Client extends Entity {
         }
     }
 
+    //Изписва всички апартамент за даден клиент. Прием id на клиент
     public static void getApartments(int id){
         ArrayList<Apartment> apartments = new ArrayList<Apartment>();
 
@@ -205,6 +198,7 @@ public class Client extends Entity {
         }
     }
 
+    //Определя месечната такса за всеки апартамент за определен клиент. Приема id клиент и големина на таксата
     public static void setTax(int id, int amount){
         try {
             PreparedStatement statement = DB.con().prepareStatement("UPDATE taxes SET amount=? WHERE client=?");
@@ -216,6 +210,7 @@ public class Client extends Entity {
         }
     }
 
+    //Връща броя на всички клиенти
     public static int allCount(){
         int count = 0;
         try{

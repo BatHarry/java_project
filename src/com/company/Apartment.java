@@ -3,11 +3,9 @@ package com.company;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
+// Клас със функционалностите свързани с апартаментите
 public class Apartment extends Entity {
     private int id;
     private String family_name;
@@ -20,6 +18,7 @@ public class Apartment extends Entity {
     private Date lastDate;
     private Date startDate;
 
+    //при инициализация се подава id на апартамента
     public Apartment(int id) {
         ResultSet rs = null;
 
@@ -57,34 +56,6 @@ public class Apartment extends Entity {
         return owes;
     }
 
-    public void setOwes(int owes) {
-        this.owes = owes;
-    }
-
-    public void setFamily_name(String family_name) {
-        this.family_name = family_name;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public void setAmountOfPeople(int amountOfPeople) {
-        this.amountOfPeople = amountOfPeople;
-    }
-
-    public void setTax(int tax) {
-        this.tax = tax;
-    }
-
-    public void setSince(int since) {
-        this.since = since;
-    }
-
-    public void setPaid(int paid) {
-        this.paid = paid;
-    }
-
     public String getFamily_name() {
         return family_name;
     }
@@ -97,26 +68,11 @@ public class Apartment extends Entity {
         return amountOfPeople;
     }
 
-    public int getTax() {
-        return tax;
-    }
-
-    public int getSince() {
-        return since;
-    }
-
-    public int getPaid() {
-        return paid;
-    }
-
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    //Връща форматиран низ за изписване в командния интерфейс.
     public String prettyPrint(){
         return  ANSI_GREEN+"id: "+ANSI_RESET+this.id+"\n"+
                 ANSI_GREEN+"Family: "+ANSI_RESET+this.family_name+"\n"+
@@ -126,6 +82,7 @@ public class Apartment extends Entity {
                 ANSI_RED+"Owes for "+(this.since - this.paid)+" months\n"+ANSI_RESET;
     }
 
+    //Процедура за създаване на нов апартамент. Приема необходимата информация в HashMap
     public static void create(HashMap<String, String> data){
         try {
             PreparedStatement stmt = DB.con().prepareStatement("INSERT INTO apartment(client, `name`, people, phone) VALUES (?,?,?,?)");
@@ -140,6 +97,7 @@ public class Apartment extends Entity {
         }
     }
 
+    //Процедура която отбелязва за платена най-старата дължима месечна такса.
     public void makePayment(){
         try {
             Date start;
@@ -167,6 +125,7 @@ public class Apartment extends Entity {
         }
     }
 
+    // Метод за редакция на параметрите на апартамента
     public void edit(HashMap<String, String>data){
         try{
             PreparedStatement stmt = DB.con().prepareStatement("UPDATE apartment SET `name`=?,people=?,phone=? WHERE id=?");
@@ -183,6 +142,7 @@ public class Apartment extends Entity {
         }
     }
 
+    //Връща общия брой на апартаментите в цялата система
     public static int allCount(){
         int count = 0;
         try{
@@ -200,6 +160,7 @@ public class Apartment extends Entity {
         return count;
     }
 
+    //Връща общия брой на хората живущи във всички апартаменти
     public static int allPeopleCount(){
         int count = 0;
         try{
@@ -217,8 +178,8 @@ public class Apartment extends Entity {
         return count;
     }
 
+    // Връща обащата сума за събиране от всички клиент
     public static int totalOwed(){
-//        ArrayList<Apartment> allApartments = new ArrayList<Apartment>();
         int totalDebt = 0;
         try{
             PreparedStatement statement = DB.con().prepareStatement("SELECT id FROM apartment");
@@ -270,6 +231,7 @@ public class Apartment extends Entity {
         return totalDebt;
     }
 
+    //Връща общата сума събрана до мемента от клиенти
     public static int totalCollected(){
         int totalCollected = 0;
         try {
@@ -286,6 +248,7 @@ public class Apartment extends Entity {
         return totalCollected;
     }
 
+    //Връща общата сума събрана в определен месец от клиенти. Приема низ съдържащ дата под формат yyyy-mm
     public static int totalCollected(String month){
         int totalCollected = 0;
         month = month+"-01";

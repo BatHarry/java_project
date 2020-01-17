@@ -4,7 +4,15 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+
+        //Основната функция на програмата. Тук се инициализира връзката с базата данни.
+        //Също така тук се намира и основния цикъл на програмата, който приема командите
+        //и опраделя коя команда от класа Commands да извика
+
+        // Инициализация на базата данни
         DB.createConnection();
+
+        // Основното меню. Ползава се, за да улесни потребителя.
         String menu = "Main menu:\n" +
                 "1. clients                             --> List all clients (buildings)\n" +
                 "   clients -number                     --> Total number of clients\n" +
@@ -32,6 +40,7 @@ public class Main {
         System.out.print(menu);
         Commands commands = new Commands();
 
+        // Основен (безкраен) цикъл на програмата. От тук се определя кой метод да се извика при въведена команда
         while(true){
             Scanner myObj = new Scanner(System.in);
             System.out.print("Enter command: ");
@@ -40,6 +49,7 @@ public class Main {
             String[] command = input.split(" ");
 
             switch (command[0]){
+                // Команди започваши с clients
                 case "clients":
                         if(command.length > 1 && command[1].equals("-all")){
                             commands.allClientsCounts();
@@ -50,6 +60,7 @@ public class Main {
                         }
 
                     break;
+                // Команди започваши с client
                 case "client":
                         if(command.length > 3 && command[2].equals("-tax")){
                             commands.setTax( Integer.parseInt(command[1].replace("-", "")), Integer.parseInt(command[3].replace("-", "")) );
@@ -63,6 +74,7 @@ public class Main {
                             System.out.print(commands.getClient(Integer.parseInt(command[1].replace("-", ""))).prettyPrint());
                         }
                     break;
+                // Команди започваши с create
                 case "create":
                         if(command.length > 1){
                             commands.createClient(command[1].replace("-", ""));
@@ -70,9 +82,11 @@ public class Main {
                             System.out.println("\u001B[31mPlease specify a type\u001B[0m");
                         }
                     break;
+                // Команди започваши с employees
                 case "employees":
                         commands.getAllEmployees();
                     break;
+                // Команди започваши с employee
                 case "employee":
                         if(command.length > 2 && command[2].equals("-edit")){
                             commands.editEmployee(Integer.parseInt(command[1].replace("-", "")));
@@ -82,6 +96,7 @@ public class Main {
                             commands.getEmployee(Integer.parseInt(command[1].replace("-", "")));
                         }
                     break;
+                // Команди започваши с apartments
                 case "apartments":
                         if( command.length > 1 && command[1].equals("-all") ){
                             commands.getApartmentsCount();
@@ -91,6 +106,7 @@ public class Main {
                             commands.getApartments(Integer.parseInt(command[1].replace("-", "")));
                         }
                     break;
+                // Команди започваши с apartment
                 case "apartment":
                         if(command.length > 2 && command[2].equals("-create")){
                             commands.createApartment( Integer.parseInt(command[1].replace("-", "")) );
@@ -102,21 +118,22 @@ public class Main {
                             commands.getApartment( Integer.parseInt(command[1].replace("-", "")) );
                         }
                     break;
+                // Команди започваши с assigned
                 case "assigned":
                         if(command.length > 1) {
                             commands.getAssigned(Integer.parseInt(command[1].replace("-", "")));
                         }
                     break;
+                // Команди започваши с assign
                 case "assign":
                         if(command.length > 2){
                             commands.assign(Integer.parseInt(command[1].replace("-", "")), Integer.parseInt(command[2].replace("-", "")));
                         }
                     break;
+                // Команди започваши с total
                 case "total":
                         if(command.length > 2){
-                            if(command[1].equals("-owed")){
-                                    commands.totalOwed(command[2]);
-                            }else if(command[1].equals("-collected")){
+                            if(command[1].equals("-collected")){
                                 commands.totalCollected(command[2]);
                             }
                         }else if(command.length > 1){
@@ -127,13 +144,16 @@ public class Main {
                             }
                         }
                     break;
+                // Командa menu
                 case "menu":
                         System.out.print(menu);
                     break;
+                // Командa за изход от програмата
                 case "exit":
                         System.out.print("Exiting program. Bye!");
                         System.exit(0);
                     break;
+                // При невалидна команда
                 default:
                     System.out.println("\u001B[31mUnrecognized command!\u001B[0m");
                     break;
